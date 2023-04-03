@@ -30,8 +30,8 @@ if __name__ == "__main__":
     search_keys = list(set(["Pollachius pollachius", "Trisopterus minutus"]))
 
     #Parameters
-    number_of_images = 200               # Desired number of images
-    headless = False                     # True = No Chrome GUI
+    number_of_images = 10               # Desired number of images
+    headless = True                     # True = No Chrome GUI
     min_resolution = (0, 0)             # Minimum desired image resolution
     max_resolution = (9999, 9999)       # Maximum desired image resolution
     max_missed = 1000                   # Max number of failed images before exit

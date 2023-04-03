@@ -1,4 +1,7 @@
 # Google Image Scraper
+
+This fork is for project 11_recofish from Data for good
+
 A library created to scrape Google Images.<br>
 If you are looking for other image scrapers, JJLimmm has created image scrapers for Gettyimages, Shutterstock, and Bing. <br>
 Visit their repo here: https://github.com/JJLimmm/Website-Image-Scraper
