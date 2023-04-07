@@ -92,6 +92,7 @@ class GoogleImageScraper():
         self.driver.get(self.url)
         time.sleep(3)
         indx = 1
+
         while self.number_of_images > count:
             try:
                 # find and click image
@@ -134,6 +135,9 @@ class GoogleImageScraper():
             except Exception:
                 time.sleep(1)
             indx += 1
+
+            # if indx >= 48:
+            #     print('toto')
 
         self.driver.quit()
         print("[INFO] Google search ended")
