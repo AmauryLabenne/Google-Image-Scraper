@@ -93,55 +93,42 @@ class GoogleImageScraper():
         time.sleep(3)
         indx = 1
 
-        while self.number_of_images > count:
-            try:
-                # find and click image
-                imgurl = self.driver.find_element(By.XPATH,
-                                                  '//*[@id="islrg"]/div[1]/div[%s]/a[1]/div[1]/img' % (str(indx)))
-                imgurl.click()
-                missed_count = 0
-            except Exception:
-                missed_count = missed_count + 1
-                if (missed_count > self.max_missed):
-                    print("[INFO] Maximum missed photos reached, exiting...")
-                    break
+        # Load all page with scrolldown
+        for i in range(100) :
+            self.driver.execute_script("window.scrollTo(100000,document.body.scrollHeight)")
 
-            try:
-                # select image from the popup
-                time.sleep(1)
-                class_names = ["n3VNCb"]
-                images = [self.driver.find_elements(By.CLASS_NAME, class_name) for class_name in class_names if
-                          len(self.driver.find_elements(By.CLASS_NAME, class_name)) != 0][0]
-                for image in images:
-                    # only download images that starts with http
-                    src_link = image.get_attribute("src")
-                    if (("http" in src_link) and (not "encrypted" in src_link)):
-                        print(
-                            f"[INFO] {self.search_key} \t #{count} \t {src_link}")
-                        image_urls.append(src_link)
-                        count += 1
-                        break
-            except Exception:
-                print("[INFO] Unable to get link")
+        # wait for images to load
+        time.sleep(3)
 
-            try:
-                # scroll page to load next image
-                if (count % 3 == 0):
-                    self.driver.execute_script("window.scrollTo(0, " + str(indx * 60) + ");")
-                element = self.driver.find_element(By.CLASS_NAME, "mye4qd")
-                element.click()
-                print("[INFO] Loading next page")
-                time.sleep(3)
-            except Exception:
-                time.sleep(1)
-            indx += 1
+        # find all images on the page
+        images = self.driver.find_elements_by_xpath("//img[@class='rg_i Q4LuWd']")
 
-            # if indx >= 48:
-            #     print('toto')
+
+
+        image_urls = []
+        for i, image in enumerate(images):
+            # get the image URL
+            image_url = image.get_attribute("src") or image.get_attribute("data-src")
+
+            # make sure the image URL is not empty
+            if image_url:
+                image_urls.append(image_url)
+                # # create a filename for the image
+                # filename = f"{search_term}_{i}.jpg"
+                #
+                # # download the image and save it to disk
+                # urllib.request.urlretrieve(image_url, filename)
+                #
+                # print(f"Downloaded {filename}")
+            else:
+                print("Skipping image due to missing URL")
+
+        image_urls_sub = image_urls[0:min(self.number_of_images, len(image_urls))]
+
 
         self.driver.quit()
         print("[INFO] Google search ended")
-        return image_urls
+        return image_urls_sub
 
     def save_images(self, image_urls, keep_filenames):
         print(keep_filenames)
